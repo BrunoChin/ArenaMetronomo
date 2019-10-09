@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audio_cache.dart';
+ 
 
 main(){
   runApp(MaterialApp(home: Home()));
@@ -15,16 +16,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   int timerTick = 90;
-  Timer timer;
-  bool started = false;
-  static AudioCache player = AudioCache();
   final tick1 = "tick1.mp3";
+  Timer timer;
+  static AudioCache player = AudioCache();
+  bool started = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("SNT Metronomo"),
+        title: Text("Arena Metronomo"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -37,12 +38,20 @@ class _HomeState extends State<Home> {
               children: <Widget>[
                 FlatButton(
                   child: Text("<"),
-                  onPressed: (){},
+                  onPressed: (){
+                    setState(() {
+                      timerTick--;
+                    });
+                  },
                 ),
                 Text("$timerTick", style: TextStyle(fontSize: 80),),
                 FlatButton(
                   child: Text(">"),
-                  onPressed: (){},
+                  onPressed: (){
+                    setState(() {
+                      timerTick++;
+                    });
+                  },
                 ),
                 ],
               ),
@@ -52,11 +61,12 @@ class _HomeState extends State<Home> {
                 onChanged: (c){
                   setState(() {
                     timerTick = c.toInt();
-                    timer.cancel();
-                    timer = Timer.periodic(Duration(milliseconds: 510 - timerTick), (Timer timer){
-                        //print("Teste");
-                        player.play(tick1);
+                    if(started){
+                      timer.cancel();
+                      timer = Timer.periodic(Duration(milliseconds: 1010 - timerTick), (Timer time){
+                          player.play(tick1);
                       });
+                    }
                   });
                 },
                 value: timerTick.toDouble()
@@ -68,7 +78,6 @@ class _HomeState extends State<Home> {
                     started = !started;
                     if(started){
                       timer = Timer.periodic(Duration(milliseconds: 1010 - timerTick), (Timer timer){
-                        //print("Teste");
                         player.play(tick1);
                       });
                     }
